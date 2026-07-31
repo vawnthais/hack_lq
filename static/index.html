@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liên Quân Mobile - Tùy Chỉnh Ảnh Load Trận</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-overlay"></div>
+    
+    <div class="container">
+        <header class="app-header">
+            <div class="logo-badge">AOV POSTER TOOL</div>
+            <h1>TÙY CHỈNH ẢNH LOAD TRẬN</h1>
+            <p class="subtitle">Liên Quân Mobile • Đấu Trường Poster Tự Động</p>
+        </header>
+
+        <main class="main-content">
+            <!-- Left Side: Form Controls -->
+            <section class="card form-card">
+                <div class="card-header">
+                    <h2><span class="icon">⚙️</span> Cấu Hình Thông Tin</h2>
+                </div>
+                
+                <form id="posterForm">
+                    <div class="form-group">
+                        <label for="webviewUrl">Link Webview Liên Quân <span class="required">*</span></label>
+                        <textarea id="webviewUrl" placeholder="Dán link webview (https://kgvn-camp.mobagarena.com/app/player-poster?...)..." rows="4" required></textarea>
+                        <small class="hint">Link thu thập khi mở chức năng đổi ảnh load trận trong game.</small>
+                    </div>
+
+                    <div id="parsedInfo" class="parsed-info hidden">
+                        <div class="info-badge"><span>Partition:</span> <strong id="infoPartition">-</strong></div>
+                        <div class="info-badge"><span>Region:</span> <strong id="infoRegion">-</strong></div>
+                        <div class="info-badge"><span>Token:</span> <strong id="infoToken">Đã nhận diện</strong></div>
+                    </div>
+
+                    <div class="form-group file-upload-group">
+                        <label>Ảnh Tùy Chỉnh <span class="required">*</span></label>
+                        <div class="file-upload-wrapper">
+                            <input type="file" id="picFile" accept="image/png, image/jpeg, image/webp" class="file-input" required>
+                            <div class="file-upload-label">
+                                <span class="icon">📁</span>
+                                <span id="fileNameDisplay">Nhấn để chọn ảnh từ thiết bị</span>
+                            </div>
+                        </div>
+                        <small class="hint">Hỗ trợ JPG, PNG, WEBP (Tối đa 5MB).</small>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="posterId">Poster ID</label>
+                            <input type="text" id="posterId" value="7562049" placeholder="7562049">
+                        </div>
+                        <div class="input-group">
+                            <label for="encodeparamInput">Mã bảo mật (encodeparam)</label>
+                            <input type="text" id="encodeparamInput" placeholder="(Tuỳ chọn) Hệ thống sẽ tự động lấy nếu để trống">
+                        </div>
+                    </div>
+
+                    <div class="input-group checkbox-group" style="flex-direction: row; align-items: center; justify-content: flex-start; gap: 10px; margin-top: 10px; background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 8px;">
+                        <input type="checkbox" id="bypassAiCheckbox" style="width: 20px; height: 20px; cursor: pointer;">
+                        <label for="bypassAiCheckbox" style="margin-bottom: 0; cursor: pointer;">
+                            <strong>Bật Chống Quét Ảnh (Bypass AI)</strong>
+                            <br>
+                            <small style="color: #aaa; font-weight: normal;">Dùng khi up ảnh bình thường bị báo lỗi thất bại (Garena kiểm duyệt nhầm).</small>
+                        </label>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="btn-submit">
+                        <span class="btn-text">⚡ THAY ĐỔI ẢNH LOAD TRẬN</span>
+                        <div class="spinner hidden"></div>
+                    </button>
+                </form>
+
+                <div id="responseBox" class="response-box hidden">
+                    <div class="response-title" id="responseTitle">Kết quả</div>
+                    <pre id="responseText"></pre>
+                </div>
+            </section>
+
+            <!-- Right Side: Live Poster Preview -->
+            <section class="card preview-card">
+                <div class="card-header">
+                    <h2><span class="icon">👁️</span> Xem Trước Load Trận</h2>
+                </div>
+                
+                <div class="poster-preview-wrapper">
+                    <div class="poster-frame">
+                        <div id="imagePlaceholder" class="placeholder-text">Chưa có ảnh</div>
+                        <img id="previewImg" src="" alt="Preview" class="hidden">
+                        
+                        <!-- AOV Loading Overlay Decorations -->
+                        <div class="poster-overlay">
+                            <div class="player-rank">SS</div>
+                            <div class="player-name" id="previewNickname">Tên Người Chơi</div>
+                            <div class="loading-bar">
+                                <div class="loading-fill"></div>
+                                <span class="loading-percent">100%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview-actions">
+                    <button type="button" class="btn-secondary" id="btnSampleImg1">✨ Dùng ảnh mẫu 1</button>
+                    <button type="button" class="btn-secondary" id="btnSampleImg2">🔥 Dùng ảnh mẫu 2</button>
+                </div>
+            </section>
+        </main>
+
+        <footer class="app-footer">
+            <p>© 2026 AOV Poster Customizer • Công cụ hỗ trợ Liên Quân Mobile</p>
+        </footer>
+    </div>
+
+    <script src="/static/script.js?v=5"></script>
+</body>
+</html>
